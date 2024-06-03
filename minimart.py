@@ -1,12 +1,28 @@
-import wampconnect as wc
+import mysql.connector
 
-db = wc.DatabaseManager(conn= None, cursor=None)
-try:
-    db.openConnection()
-    results = db.cursor.execute("SELECT * FROM product")
-    
-    # Print the results with added price
-    for row in results:
-        print(row["price"] + 20.5)
-finally:
-    db.closeConnection()
+cursor = None
+conn = None
+
+    # Connect to the MySQL database
+def openConnection():
+    global conn, cursor
+    conn = mysql.connector.connect(
+        host="localhost",
+        user="root",
+        password="",
+        database="minimart"
+    )
+    # Create a cursor object
+    cursor = conn.cursor(dictionary=True)
+
+# Close the cursor and connection
+def closeConnection():
+    global conn, cursor
+    cursor.close()
+    conn.close()
+
+openConnection()
+cursor.execute("SELECT * FROM product")
+results = cursor.fetchall()
+print(results)
+closeConnection()
